@@ -871,14 +871,18 @@ export class WAStartupService {
           messageRaw.id = id;
         }
 
-        if (type === 'append') {
-          const find = await this.repository.message.findFirst({
-            where: {
-              keyId: messageRaw.keyId,
-              instanceId: messageRaw.instanceId,
-            },
-          });
+        const find = await this.repository.message.findFirst({
+          where: {
+            keyId: messageRaw.keyId,
+            instanceId: messageRaw.instanceId,
+          },
+        });
 
+        if (received.key.fromMe && find?.externalAttributes) {
+          messageRaw.externalAttributes = find.externalAttributes;
+        }
+
+        if (type === 'append') {
           if (find?.id) {
             messageRaw.id = find.id;
           }
@@ -1331,6 +1335,7 @@ export class WAStartupService {
           device: 'web',
           isGroup: isJidGroup(m.key.remoteJid),
           typebotSessionId: undefined,
+          externalAttributes: options?.externalAttributes
         };
       })();
       if (this.databaseOptions.DB_OPTIONS.NEW_MESSAGE) {
@@ -1339,8 +1344,6 @@ export class WAStartupService {
         });
         messageSent.id = id;
       }
-
-      messageSent['externalAttributes'] = options?.externalAttributes;
 
       this.ws.send(this.instance.name, 'send.message', messageSent);
       this.sendDataWebhook('sendMessage', messageSent).catch((error) =>
@@ -2273,6 +2276,7 @@ export class WAStartupService {
         messageTimestamp: true,
         instanceId: true,
         device: true,
+        externalAttributes: true,
         MessageUpdate: {
           select: {
             status: true,

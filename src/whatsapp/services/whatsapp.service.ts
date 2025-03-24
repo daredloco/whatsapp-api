@@ -39,6 +39,7 @@
 
 import makeWASocket, {
   AnyMessageContent,
+  AnyRegularMessageContent,
   BaileysEventMap,
   BufferedEventData,
   CacheStore,
@@ -108,6 +109,7 @@ import { isArray, isBase64, isNotEmpty, isURL } from 'class-validator';
 import {
   ArchiveChatDto,
   DeleteMessage,
+  EditMessage,
   OnWhatsAppDto,
   ReadMessageDto,
   ReadMessageIdDto,
@@ -2046,6 +2048,40 @@ export class WAStartupService {
           error.toString(),
         ],
       });
+    }
+  }
+
+  public async editMessage(edi: EditMessage) {
+    try {
+      const id = Number.parseInt(edi.id);
+      const message = await this.repository.message.findUnique({
+        where: { id },
+      });
+
+      if(message.messageType !== "conversation" && message.messageType !== "extendedTextMessage")
+      {
+        throw new InternalServerErrorException(
+          'Invalid message type for editing', 
+          'The message type "' + message.messageType + '"is not allowed for editing'
+        );
+      }
+
+      await this.client.sendMessage(message.keyRemoteJid, {
+        //caption: edi.newContent,
+        text: edi.newContent,
+        edit: {
+          remoteJid: message.keyRemoteJid,
+          fromMe: message.keyFromMe,
+          id: message.keyId,
+        }
+      });
+
+      return { editedAt: new Date(), message };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error while editing message',
+        error?.toString(),
+      );
     }
   }
 

@@ -1393,6 +1393,36 @@ paths:
           content:
             application/json: {}
 
+  /chat/editMessage/{instanceName}:
+      patch:
+        tags:
+          - Chat Controller
+        summary: Edit Message
+        description: |
+            This endpoint is used to edit a message in the chat instance.
+            It requires the instanceName parameter in the path and the id and editContent in the query.
+        parameters:
+          - name: instanceName
+            in: path
+            schema:
+              type: string
+            required: true
+            description: '- required'
+            example: 'codechat_v1'
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 12345
+                  newContent: text
+        responses:
+          '200':
+            description: Sucessful response
+            content:
+              application/json: {}
+  
   /chat/deleteMessageForEveryone/{instanceName}:
       delete:
         tags:

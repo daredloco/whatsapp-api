@@ -82,6 +82,11 @@ export class ArchiveChatDto {
   archive: boolean;
 }
 
+export class EditMessage {
+  id: string;
+  newContent: string;
+}
+
 export class DeleteMessage {
   id: string;
   everyOne?: 'true' | 'false';

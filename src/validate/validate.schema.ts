@@ -531,9 +531,11 @@ export const editMessageSchema: JSONSchema7 = {
   $id: ulid(),
   type: 'object',
   properties: {
-    id: { type: 'string', pattern: '\\d+', minLength: 1 },
+    id: { type: 'integer' },
     newContent: { type: 'string', minLength: 1 },
-  }
+  },
+  required: ['id'],
+  ...isNotEmpty('id', 'newContent')
 };
 
 export const deleteMessageSchema: JSONSchema7 = {

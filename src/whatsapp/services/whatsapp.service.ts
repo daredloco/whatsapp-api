@@ -2066,45 +2066,19 @@ export class WAStartupService {
         );
       }
 
-      const messageSent: PrismType.Message = await (async () => {
-        let m: proto.IWebMessageInfo;
+      let m = await this.client.sendMessage(message.keyRemoteJid, {
+        //caption: edi.newContent,
+        text: edi.newContent,
+        edit: {
+          remoteJid: message.keyRemoteJid,
+          fromMe: message.keyFromMe,
+          id: message.keyId,
+        }
+      });
 
-        m = await this.client.sendMessage(message.keyRemoteJid, {
-          //caption: edi.newContent,
-          text: edi.newContent,
-          edit: {
-            remoteJid: message.keyRemoteJid,
-            fromMe: message.keyFromMe,
-            id: message.keyId,
-          }
-        });
+      this.client.ev.emit('messages.upsert', { messages: [m], type: 'notify' });
 
-        this.client.ev.emit('messages.upsert', { messages: [m], type: 'notify' });
-
-        return {
-          id: undefined,
-          keyId: m.key.id,
-          keyFromMe: m.key.fromMe,
-          keyRemoteJid: m.key.remoteJid,
-          keyParticipant: m?.participant,
-          pushName: m?.pushName,
-          messageType: "editedMessage",
-          content: m.message[getContentType(m.message)] as PrismType.Prisma.JsonValue,
-          messageTimestamp: (() => {
-            if (Long.isLong(m.messageTimestamp)) {
-              return m.messageTimestamp.toNumber();
-            }
-            return m.messageTimestamp as number;
-          })(),
-          instanceId: this.instance.id,
-          device: 'web',
-          isGroup: isJidGroup(m.key.remoteJid),
-          typebotSessionId: undefined,
-          externalAttributes: undefined
-        };
-      })();
-
-      return messageSent;
+      return { editedAt: new Date(), message };
     } catch (error) {
       throw new InternalServerErrorException(
         'Error while editing message',

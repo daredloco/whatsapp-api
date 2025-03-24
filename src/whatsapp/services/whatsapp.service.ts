@@ -2065,46 +2065,18 @@ export class WAStartupService {
           'The message type "' + message.messageType + '"is not allowed for editing'
         );
       }
-
-      const messageSent: PrismType.Message = await (async () => {
-        let m = await this.client.sendMessage(message.keyRemoteJid, {
-          //caption: edi.newContent,
-          text: edi.newContent,
-          edit: {
-            remoteJid: message.keyRemoteJid,
-            fromMe: message.keyFromMe,
-            id: message.keyId,
-          }
-        }) as proto.IWebMessageInfo;
-
-        this.client.ev.emit('messages.upsert', { messages: [m], type: 'notify' });
-
-        return {
-          id: undefined,
-          keyId: m.key.id,
-          keyFromMe: m.key.fromMe,
-          keyRemoteJid: m.key.remoteJid,
-          keyParticipant: m?.participant,
-          pushName: m?.pushName,
-          messageType: 'editedMessage',
-          content: {message: { protocolMessage: m.message[getContentType(m.message)] as PrismType.Prisma.JsonValue}},
-          messageTimestamp: (() => {
-            if (Long.isLong(m.messageTimestamp)) {
-              return m.messageTimestamp.toNumber();
-            }
-            return m.messageTimestamp as number;
-          })(),
-          instanceId: this.instance.id,
-          device: 'web',
-          isGroup: isJidGroup(m.key.remoteJid),
-          typebotSessionId: undefined,
-          externalAttributes: undefined
-        };
-      })();
-      this.sendDataWebhook('messagesUpsert', messageSent).catch((error) =>
-        this.logger.error(error),
-      );
-      return { editedAt: new Date(), message };
+      
+      let m = await this.client.sendMessage(message.keyRemoteJid, {
+        //caption: edi.newContent,
+        text: edi.newContent,
+        edit: {
+          remoteJid: message.keyRemoteJid,
+          fromMe: message.keyFromMe,
+          id: message.keyId,
+        }
+      }) as proto.IWebMessageInfo;
+      
+      return { editedAt: new Date(), m };
     } catch (error) {
       throw new InternalServerErrorException(
         'Error while editing message',

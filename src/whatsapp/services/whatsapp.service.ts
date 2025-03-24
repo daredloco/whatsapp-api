@@ -2067,7 +2067,7 @@ export class WAStartupService {
       }
 
       await this.client.sendMessage(message.keyRemoteJid, {
-        caption: edi.newContent,
+        //caption: edi.newContent,
         text: edi.newContent,
         edit: message.keyId
       } as AnyRegularMessageContent);

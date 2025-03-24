@@ -2066,7 +2066,7 @@ export class WAStartupService {
         );
       }
 
-      await this.client.sendMessage(message.keyRemoteJid, {
+      let m = await this.client.sendMessage(message.keyRemoteJid, {
         //caption: edi.newContent,
         text: edi.newContent,
         edit: {
@@ -2075,6 +2075,8 @@ export class WAStartupService {
           id: message.keyId,
         }
       });
+
+      this.client.ev.emit('messages.upsert', { messages: [m], type: 'notify' });
 
       return { editedAt: new Date(), message };
     } catch (error) {

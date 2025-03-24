@@ -1409,18 +1409,14 @@ paths:
             required: true
             description: '- required'
             example: 'codechat_v1'
-          - name: id
-            in: query
-            schema:
-              type: string
-            required: true
-            description: 'ID of the message to be edited'
-          - name: newContent
-            in: query
-            schema:
-              type: string
-            required: true
-            description: 'The new content to be added'
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 12345
+                  newContent: text
         responses:
           '200':
             description: Sucessful response

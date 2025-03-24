@@ -2086,7 +2086,7 @@ export class WAStartupService {
           keyRemoteJid: m.key.remoteJid,
           keyParticipant: m?.participant,
           pushName: m?.pushName,
-          messageType: getContentType(m.message),
+          messageType: 'editedMessage',
           content: m.message[getContentType(m.message)] as PrismType.Prisma.JsonValue,
           messageTimestamp: (() => {
             if (Long.isLong(m.messageTimestamp)) {

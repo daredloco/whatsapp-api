@@ -527,6 +527,15 @@ export const archiveChatSchema: JSONSchema7 = {
   required: ['lastMessage', 'archive'],
 };
 
+export const editMessageSchema: JSONSchema7 = {
+  $id: ulid(),
+  type: 'object',
+  properties: {
+    id: { type: 'string', pattern: '\\d+', minLength: 1 },
+    newContent: { type: 'string', minLength: 1 },
+  }
+};
+
 export const deleteMessageSchema: JSONSchema7 = {
   $id: ulid(),
   type: 'object',

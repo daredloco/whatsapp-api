@@ -43,6 +43,7 @@ import {
   WhatsAppNumberDto,
   ReadMessageIdDto,
   RejectCallDto,
+  EditMessage,
 } from '../dto/chat.dto';
 import { InstanceDto } from '../dto/instance.dto';
 import { WAMonitoringService } from '../services/monitor.service';
@@ -73,6 +74,10 @@ export class ChatController {
 
   public async deleteChat({ instanceName }: InstanceDto, data: string) {
     return await this.waMonitor.waInstances.get(instanceName).deleteChat(data);
+  }
+
+  public async editMessage({ instanceName }: InstanceDto, data: EditMessage) {
+    return await this.waMonitor.waInstances.get(instanceName).editMessage(data);
   }
 
   public async deleteMessage({ instanceName }: InstanceDto, data: DeleteMessage) {

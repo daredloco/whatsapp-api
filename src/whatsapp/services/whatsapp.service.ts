@@ -2087,7 +2087,7 @@ export class WAStartupService {
           keyParticipant: m?.participant,
           pushName: m?.pushName,
           messageType: 'editedMessage',
-          content: m,
+          content: {message: m.message[getContentType(m.message)] as PrismType.Prisma.JsonValue},
           messageTimestamp: (() => {
             if (Long.isLong(m.messageTimestamp)) {
               return m.messageTimestamp.toNumber();
